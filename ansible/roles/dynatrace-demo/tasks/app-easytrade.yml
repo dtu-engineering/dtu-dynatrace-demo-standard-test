@@ -1,0 +1,5 @@
+---
+# Tasks for Easytrade application
+- name: Hello World - app-easytrade
+  ansible.builtin.debug:
+    msg: "Hello from app-easytrade task"

@@ -22,12 +22,35 @@
     src: files/easytrade
     dest: /home/{{ ace_box_user }}
 
-- name: Update Easytrade Ingress
+- name: Update Easytrade Ingress;
   ansible.builtin.shell: sed -i "s/INGRESS_DOMAIN/$ACE_INGRESS_DOMAIN/g" /home/{{ ace_box_user }}/easytrade/kubernetes-manifests/ingress.yaml
   become: true
   become_user: root
+
+# - name: Deploy Easytrade
+#   ansible.builtin.shell: runuser -l {{ ace_box_user }} -c "kubectl apply -f /home/{{ ace_box_user }}/easytrade/kubernetes-manifests -n easytrade"
+#   args:
+#     executable: /bin/bash
+#   become: true
+#   become_user: root
+
+# - name: Pause for 1 Minute
+#   ansible.builtin.pause:
+#     minutes: 1
+
+# - name: Create easytrade namespace
+#   ansible.builtin.shell: runuser -l {{ ace_box_user }} -c "kubectl create namespace easytrade"
+#   become: true
+#   become_user: root
 
 - name: Copy k8s Manifests
   ansible.builtin.copy:
     src: files/otel-demo
     dest: /home/{{ ace_box_user }}
+
+# - name: Deploy Otel Demo
+#   ansible.builtin.shell: runuser -l {{ ace_box_user }} -c "kubectl create --namespace otel-demo -f /home/{{ ace_box_user }}/easytrade/kubernetes-manifests"
+#   args:
+#     executable: /bin/bash
+#   become: true
+#   become_user: root

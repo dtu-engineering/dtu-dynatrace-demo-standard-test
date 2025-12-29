@@ -1,0 +1,7 @@
+- include_vars: '{{ aether_config_file_path }}'
+- include_tasks:
+    file: kubernetes.yml
+- include_tasks:
+    file: easytrade-app.yml
+- include_tasks:
+    file: otel-demo-app.yml

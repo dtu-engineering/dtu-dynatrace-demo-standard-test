@@ -1,0 +1,10 @@
+---
+# Playbook to complete all general Aether instance configuration tasks
+- name: DTU Dynatrace Demo
+  hosts: localhost
+  connection: local
+  vars:
+    aether_config_file_path: './ansible_config_vars.yml'
+  tasks:
+    - include_role:
+        name: dtu-dynatrace-demo

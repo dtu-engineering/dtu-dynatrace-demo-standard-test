@@ -1,7 +1,9 @@
-- include_vars: '{{ ansible_config_vars }}'
-- include_tasks:
-    file: kubernetes.yml
-- include_tasks:
-    file: easytrade-app.yml
-- include_tasks:
-    file: otel-demo-app.yml
+- include_vars: "{{ aether_config_file_path }}"
+
+- name: Include task files
+  include_tasks: "{{ item }}"
+  loop:
+    - kubernetes.yml
+    - dynatrace-operator.yml
+    - app-easytrade.yml
+    - app-otel-demo.yml

@@ -1,5 +1,82 @@
 ---
-# Tasks for Easytrade application
-- name: Hello World - app-kubernetes
-  ansible.builtin.debug:
-    msg: "Hello from app-kubernetes task"
+#############
+# k3s Tasks #
+#############
+- name: Install k3s
+  become: true
+  shell:
+    cmd: 'curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} sh -s - --disable traefik --disable servicelb --write-kubeconfig-mode=644 --egress-selector-mode=disabled'
+
+- name: Add KUBECONFIG to user .bashrc
+  lineinfile:
+    path: "/home/{{ instance_user }}/.bashrc"
+    line: 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml'
+    create: yes
+  owner: "{{ instance_user }}"
+  group: "{{ instance_user }}"
+  mode: "0644"
+
+################
+# Docker Tasks #
+################
+
+- name: Update repositories cache
+  become: true
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: Ensure keyrings directory exists
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Add official docker GPG key
+  become: true
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    keyring: /etc/apt/keyrings/docker.gpg
+    state: present
+
+- name: Add Docker APT repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [arch={{ deb_architecture[ansible_architecture] | default(ansible_architecture) }} signed-by=/etc/apt/keyrings/docker.gpg]
+      https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
+    filename: docker
+    state: present
+
+- name: Install Docker packages
+  become: true
+  apt:
+    name:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    state: present
+    update_cache: true
+
+- name: Enable Docker service
+  become: true
+  systemd:
+    name: docker
+    enabled: yes
+
+#################
+# Restart Tasks #
+#################
+
+- name: Restart docker
+  become: true
+  ansible.builtin.service:
+    name: docker
+    state: restarted
+
+- name: Restart k3s
+  become: true
+  ansible.builtin.service:
+    name: k3s
+    state: restarted

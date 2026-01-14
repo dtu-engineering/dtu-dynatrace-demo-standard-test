@@ -1,0 +1,37 @@
+---
+# k3s
+k3s_version: "v1.29.1+k3s1"
+
+# dynatrace operator
+dt_operator_mode: "cloudNativeFullStack"
+dt_operator_release: "1.7.2" # https://github.com/Dynatrace/dynatrace-operator/releases/tag/v1.7.2
+dt_operator_namespace: "dynatrace"
+dt_operator_dt_access_token_name: "dtu-dynatrace-operator-api-token"
+dt_operator_dt_data_ingest_token_name: "dtu-dynatrace-operator-data-ingest-token"
+dt_dynakube_api_version: "dynatrace.com/v1beta5" # https://docs.dynatrace.com/docs/ingest-from/setup-on-k8s/reference/dynakube-parameters
+dt_log_monitoring: "off"
+dt_host_group: "dtu-dynatrace-demo"
+dt_cluster_name: dynakube
+dt_activegate_capabilities:
+  - routing
+  - kubernetes-monitoring
+  - dynatrace-api
+
+# easytrade
+
+
+# opentelemetry demo
+
+
+
+
+
+
+# NOTE: THESE ARE PASSED IN AS ANSIBLE VARIABLES
+# aether_id: "$AETHER_ID"
+# dynatrace_api_token: "$DYNATRACE_ACCESS_TOKEN"
+# dynatrace_environment_app_url: "$DYNATRACE_ENVIRONMENT_APP_URL"
+# dynatrace_environment_url: "$DYNATRACE_ENVIRONMENT_URL"
+# instance_user: "$INSTANCE_USER"
+# instance_password: "$INSTANCE_PASSWORD"
+# ingress_domain: "$INGRESS_DOMAIN"

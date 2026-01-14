@@ -4,7 +4,7 @@ k3s_version: "v1.29.1+k3s1"
 
 # dynatrace operator
 dt_operator_mode: "cloudNativeFullStack"
-dt_operator_release: "1.7.2" # https://github.com/Dynatrace/dynatrace-operator/releases/tag/v1.7.2
+dt_operator_release: "v1.7.2" # https://github.com/Dynatrace/dynatrace-operator/releases/tag/v1.7.2
 dt_operator_namespace: "dynatrace"
 dt_operator_dt_access_token_name: "dtu-dynatrace-operator-api-token"
 dt_operator_dt_data_ingest_token_name: "dtu-dynatrace-operator-data-ingest-token"

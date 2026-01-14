@@ -12,11 +12,18 @@
     status_code: [200, 201]
     body:
       name: "Dynatrace Operator Token"
-      scopes: '["DataExport", "InstallerDownload", "activeGateTokenManagement.create", "entities.read", "settings.read", "settings.write"]'
+      scopes:
+        - DataExport
+        - InstallerDownload
+        - activeGateTokenManagement.create
+        - entities.read
+        - settings.read
+        - settings.write
     body_format: json
     headers:
-      Authorization: "Api-Token {{ dynatrace_api_token }}"
+      Authorization: "Api-Token {{ dynatrace_environment_access_token }}"
   register: dynatrace_operator_token_result
+
 
 - name: Create Dynatrace Data Ingest Token
   uri:
@@ -25,11 +32,15 @@
     status_code: [200, 201]
     body:
       name: "Dynatrace Data Ingest Token"
-      scopes: '["metrics.ingest", "logs.ingest", "openTelemetryTrace.ingest"]'
+      scopes:
+        - metrics.ingest
+        - logs.ingest
+        - openTelemetryTrace.ingest
     body_format: json
     headers:
-      Authorization: "Api-Token {{ dynatrace_api_token }}"
+      Authorization: "Api-Token {{ dynatrace_environment_access_token }}"
   register: dynatrace_data_ingest_token_result
+
 
 - name: Create Dynatrace namespace
   command: |
@@ -57,9 +68,12 @@
     --from-literal="apiToken={{ dynatrace_operator_token_result.json.token }}"
     --from-literal="dataIngestToken={{ dynatrace_data_ingest_token_result.json.token }}"
   register: dynakube_secret
-  retries: 10
-  delay: 5
-  until: dynakube_secret.rc == 0
+  failed_when: > 
+    dynakube_secret.rc != 0 and 
+    "already exists" not in dynakube_secret.stderr
+  retries: 15
+  delay: 10
+  changed_when: "'already exists' not in dynakube_secret.stderr"
 
 - name: Template cloudNativeFullStack Dynakube manifest
   ansible.builtin.template:
@@ -73,18 +87,9 @@
   shell: |
     kubectl apply -f "{{ role_path }}/files/cloudNativeFullStack.yaml"
   register: dt_operator_cloud_native_full_stack_result
-  retries: 20
+  retries: 15
   delay: 5
   until: dt_operator_cloud_native_full_stack_result.rc == 0
-
-- name: Apply cloudNativeFullStack Dynakube manifest
-  kubernetes.core.k8s:
-    state: present
-    src: "{{ role_path }}/files/cloudNativeFullStack.yaml"
-  register: dynakube
-  retries: 20
-  delay: 20
-  until: dynakube is not failed
 
 - name: Wait minimum 1 OneAgent pod to be created
   shell: |

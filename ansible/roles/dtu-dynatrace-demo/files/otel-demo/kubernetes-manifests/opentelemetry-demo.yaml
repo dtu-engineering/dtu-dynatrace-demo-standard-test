@@ -18555,8 +18555,12 @@ spec:
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=2.1.3
           resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
             limits:
-              memory: 120Mi
+              cpu: 500m
+              memory: 512Mi
           volumeMounts:
       initContainers:
         - command:
@@ -18628,8 +18632,12 @@ spec:
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=2.1.3
           resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
             limits:
-              memory: 300Mi
+              cpu: 500m
+              memory: 512Mi
           volumeMounts:
       volumes:
 ---
@@ -19110,8 +19118,12 @@ spec:
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=2.1.3
           resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
             limits:
-              memory: 300Mi
+              cpu: 500m
+              memory: 512Mi
           volumeMounts:
       initContainers:
         - command:
@@ -19207,8 +19219,12 @@ spec:
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=2.1.3
           resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
             limits:
-              memory: 250Mi
+              cpu: 300m
+              memory: 256Mi
           securityContext:
             runAsGroup: 1001
             runAsNonRoot: true
@@ -19431,7 +19447,7 @@ spec:
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: http://$(OTEL_COLLECTOR_NAME):4318
             - name: KAFKA_HEAP_OPTS
-              value: -Xmx400M -Xms400M
+              value: -Xmx1G -Xms512M
             - name: KAFKA_LISTENERS
               value: PLAINTEXT://:9092,CONTROLLER://:9093
             - name: KAFKA_CONTROLLER_LISTENER_NAMES
@@ -19441,8 +19457,12 @@ spec:
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=2.1.3
           resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
             limits:
-              memory: 600Mi
+              cpu: "1000m"
+              memory: 2Gi
           securityContext:
             runAsGroup: 1000
             runAsNonRoot: true
@@ -19591,8 +19611,12 @@ spec:
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=2.1.3
           resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
             limits:
-              memory: 120Mi
+              cpu: 500m
+              memory: 512Mi
           securityContext:
             runAsGroup: 1000
             runAsNonRoot: true
@@ -19986,8 +20010,12 @@ spec:
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: service.name=$(OTEL_SERVICE_NAME),service.namespace=opentelemetry-demo,service.version=2.1.3
           resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
             limits:
-              memory: 20Mi
+              cpu: 300m
+              memory: 256Mi
           securityContext:
             runAsGroup: 1000
             runAsNonRoot: true

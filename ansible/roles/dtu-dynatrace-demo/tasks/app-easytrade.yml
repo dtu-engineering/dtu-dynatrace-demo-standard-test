@@ -1,5 +1,54 @@
 ---
 # Tasks for Easytrade application
-- name: Hello World - app-easytrade
-  ansible.builtin.debug:
-    msg: "Hello from app-easytrade task"
+- name: Ensure easytrade namespace exists
+  shell: |
+    kubectl get namespace easytrade || kubectl create namespace easytrade
+  register: easytrade_ns
+  changed_when: "'created' in easytrade_ns.stdout"
+
+- name: Apply easytrade release manifests
+  shell: |
+    kubectl -n easytrade apply -f "{{ role_path }}/files/easytrade/kubernetes-manifests/base/release"
+  register: easytrade_release
+  retries: 10
+  delay: 6
+  until: easytrade_release.rc == 0
+
+- name: Ensure ingress directory exists
+  ansible.builtin.file:
+    path: "{{ role_path }}/files/easytrade/kubernetes-manifests/ingress"
+    state: directory
+    mode: "0755"
+
+- name: Template Easytrade ingress
+  ansible.builtin.template:
+    src: easytrade/ingress.yaml.j2
+    dest: "{{ role_path }}/files/easytrade/kubernetes-manifests/ingress/ingress.yaml"
+    mode: "0644"
+
+- name: Apply Easytrade ingress
+  shell: kubectl apply -f "{{ role_path }}/files/easytrade/kubernetes-manifests/ingress/easytrade-ingress.yaml"
+
+- name: Pause for easytrade deployment
+  pause:
+    seconds: 120
+
+- name: Count all Easytrade pods
+  shell: |
+    kubectl -n easytrade get pods --no-headers | wc -l
+  register: easytrade_pod_count
+  retries: 20
+  delay: 10
+  until: easytrade_pod_count.stdout | int > 0
+
+- name: Wait for all Easytrade pods to be Running and Ready
+  shell: |
+    kubectl -n easytrade get pods -o json \
+    | jq '[.items[] 
+           | select(.status.phase=="Running") 
+           | select(all(.status.containerStatuses[]; .ready==true))
+          ] | length'
+  register: easytrade_ready_count
+  retries: 30
+  delay: 10
+  until: easytrade_ready_count.stdout | int == (easytrade_pod_count.stdout | int)

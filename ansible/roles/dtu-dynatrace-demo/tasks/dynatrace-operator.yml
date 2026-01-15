@@ -75,17 +75,23 @@
   delay: 10
   changed_when: "'already exists' not in dynakube_secret.stderr"
 
+- name: Ensure operator files directory exists
+  ansible.builtin.file:
+    path: "{{ role_path }}/files/operator"
+    state: directory
+    mode: "0755"
+
 - name: Template cloudNativeFullStack Dynakube manifest
   ansible.builtin.template:
-    src: "cloudNativeFullStack.yaml.j2"
-    dest: "{{ role_path }}/files/cloudNativeFullStack.yaml"
+    src: "operator/cloudNativeFullStack.yaml.j2"
+    dest: "{{ role_path }}/files/operator/cloudNativeFullStack.yaml"
     owner: "{{ instance_user }}"
     group: "{{ instance_user }}"
     mode: "0644"
 
 - name: Apply cloudNativeFullStack manifest
   shell: |
-    kubectl apply -f "{{ role_path }}/files/cloudNativeFullStack.yaml"
+    kubectl apply -f "{{ role_path }}/files/operator/cloudNativeFullStack.yaml"
   register: dt_operator_cloud_native_full_stack_result
   retries: 15
   delay: 5

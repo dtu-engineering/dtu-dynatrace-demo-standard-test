@@ -18,7 +18,16 @@ dt_activegate_capabilities:
   - dynatrace-api
 
 # easytrade
-
+easytrade_namespace: "easytrade"
+easytrade_domain: "easytrade.{{ ingress_domain }}"
+easytrade_image_tag: "4d5adb3"
+easytrade_addDashboardLink: true
+easytrade_addDashboardPreview: true
+easytrade_build_version: "1.0.0"
+easytrade_release_stage: "staging"
+easytrade_deploy: true
+easytrade_owner: "ace-box"
+easytrade_ingress_class: "{{ ingress_class }}"
 
 # opentelemetry demo
 

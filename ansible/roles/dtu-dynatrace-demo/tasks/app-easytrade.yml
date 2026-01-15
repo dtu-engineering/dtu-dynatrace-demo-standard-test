@@ -31,7 +31,7 @@
 
 - name: Pause for easytrade deployment
   pause:
-    seconds: 120
+    seconds: 60
 
 - name: Count all Easytrade pods
   shell: |

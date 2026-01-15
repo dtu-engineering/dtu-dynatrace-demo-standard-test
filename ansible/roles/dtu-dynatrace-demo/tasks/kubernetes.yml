@@ -5,7 +5,7 @@
 - name: Install k3s
   become: true
   shell:
-    cmd: 'curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} sh -s - --disable traefik --disable servicelb --write-kubeconfig-mode=644 --egress-selector-mode=disabled'
+    cmd: 'curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} sh -s - --disable servicelb --write-kubeconfig-mode=644 --egress-selector-mode=disabled'
 
 - name: Add KUBECONFIG to user .bashrc
   lineinfile:
